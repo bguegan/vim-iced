@@ -88,8 +88,14 @@ function! iced#nrepl#var#extract_by_current_top_list(callback) abort
   let code = ret['code']
   if empty(code) | return iced#message#error('finding_code_error') | endif
 
+  let ns_name = iced#nrepl#ns#name_by_buf()
   let pos = ret['curpos']
   let option = {'line': pos[1], 'column': pos[2]}
+
+  if ns_name !=# ''
+    let option['ns'] = ns_name
+  endif
+
   call iced#nrepl#eval(code, option, {resp ->
         \ s:extract_var_name(resp, a:callback)})
 endfunction
